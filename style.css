@@ -1,0 +1,50 @@
+/* Get rid of border box on editable content */
+* { -moz-box-sizing: border-box; box-sizing: border-box; }
+*:focus { outline: none; }
+
+/* override default heading sizes */
+h1 { font-size: 2.0em; }
+h2 { font-size: 1.5em; }
+h3 { font-size: 1.17em; }
+h4 { font-size: 1.0em; }
+h5 { font-size: 0.83em; }
+h6 { font-size: 0.67em; }
+
+/* set the font and the artical content width */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, “Segoe UI”, Roboto, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    /*line-height: 1.8;*/
+    max-width: 75%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* table styling
+
+    Github table style and code block style
+    code plock style from logbook link?
+
+*/
+table {
+    display: block;
+    width: 100%;
+    overflow: auto;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+/* code blocks */
+pre > code {
+    display: block;
+    padding: 1rem 1.5rem;
+    white-space: pre;
+}
+
+code {
+    margin: 0.2rem;
+    font-size: 90%;
+    background: #F1F1F1;
+    border: 1px solid #E1E1E1;
+    border-radius: 4px;
+}
