@@ -1,29 +1,63 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-	<head>
-		<title>Journal</title>
+    <head>
+        <title>Journal</title>
         <meta charset="utf-8">
-		<meta name="description" content="Journal">
+        <meta name="description" content="Journal">
+        <style>
+            h1 { font-size: 2.0em; }
+            h2 { font-size: 1.5em; }
+            h3 { font-size: 1.17em; }
+            h4 { font-size: 1.0em; }
+            h5 { font-size: 0.83em; }
+            h6 { font-size: 0.67em; }
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, “Segoe UI”, Roboto, Helvetica, Arial, sans-serif; 
+                font-size: 16px; 
+                /*line-height: 1.8;*/
+                max-width: 75%;
+                margin-left: auto; 
+                margin-right: auto;
+            }
+        </style>
     </head>
-	<body>
-		<section>
-			<article contenteditable="true">
-				<h1>Heading 1</h1>
-				<h2>Heading 2</h2>
-				<h3>Heading 3</h3>
-				<h4>Heading 4</h4>
-				<h5>Heading 5</h5>
-				<h6>Heading 6</h6>
-				<p>Paragraph text...</p>
-				unordered list:
-				<ul>
-					<li>foo</li>
-				</ul>
-				ordered list:
-				<ol>
-					<li>foo</li>
-				</ol>
-			</article>
-		</section>
-	</body>
+    <body>
+        <section>
+            <header>
+                <h1 align="center">
+                    <span>2017/12/01 - </span>
+                    <span contenteditable="true">New Entry</span>
+                </h1>
+                <hr>
+            </header>
+            <article contenteditable="true">
+                <h1>Heading 1</h1>
+                <h2>Heading 2</h2>
+                <h3>Heading 3</h3>
+                <h4>Heading 4</h4>
+                <h5>Heading 5</h5>
+                <h6>Heading 6</h6>
+                <p>Paragraph text...</p>
+                unordered list:
+                <ul>
+                    <li>foo</li>
+                </ul>
+                ordered list:
+                <ol>
+                    <li>foo</li>
+                </ol>
+                table:
+                <table>
+                    <tr>
+                        <th>Header 1</th>
+                        <th>Header 2</th>
+                    </tr>
+                    <tr>
+                        <td>Header 1</td>
+                        <td>Header 2</td>
+                    </tr>
+                </table>
+            </article>
+        </section>
+    </body>
 </html>
