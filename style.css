@@ -18,6 +18,7 @@ h3 { font-size: 1.17rem; }
 h4 { font-size: 1.0rem; }
 h5 { font-size: 0.83rem; }
 h6 { font-size: 0.67rem; }
+a { color: deepskyblue; }
 
 /* table styling: Github or skeleton table style */
 table {
@@ -29,12 +30,6 @@ table {
 }
 
 /* code blocks */
-pre > code {
-    display: block;
-    padding: 1rem 1.5rem;
-    white-space: pre;
-}
-
 code {
     display: block;
     padding: 1rem 1.5rem;
@@ -43,6 +38,9 @@ code {
     background: #F1F1F1;
     border: 1px solid #E1E1E1;
     border-radius: 4px;
+    -moz-tab-size: 4;
+    -o-tab-size:   4;
+    tab-size:      4;
 }
 
 /* code blocks */
@@ -53,9 +51,6 @@ blockquote {
     padding-left: 15px;
     margin-right: 0px;
 }
-
-/* link styling */
-a { color: deepskyblue; }
 
 /* table formatting */
 table {
