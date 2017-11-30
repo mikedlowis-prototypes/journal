@@ -52,8 +52,11 @@
 
         ";": (evnt) => keyCmd(evnt, "insertHTML", "<code>\r\n</code>"),
         "'": (evnt) => {
-            const block = (getSelNode().nodeName === "BLOCKQUOTE" ? "<p>" : "<blockquote>");
-            return !document.execCommand("formatBlock", false, block);
+            if (evnt.ctrlKey || evnt.metaKey) {
+                const block = (getSelNode().nodeName === "BLOCKQUOTE" ? "<p>" : "<blockquote>");
+                return !document.execCommand("formatBlock", false, block);
+            }
+            return true;
         },
     };
 
@@ -64,7 +67,7 @@
         return "" +
             date.getFullYear() + "." +
             (month > 9 ? '' : '0') + month + "." +
-            (day > 9 ? '' : '0') + day
+            (day > 9 ? '' : '0') + day;
     };
 
     header.onkeyup = (evnt) => {
