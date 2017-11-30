@@ -1,86 +1,64 @@
 "use strict";
 
 (() => {
-    const getSelNode = () => {
-        const node = document.getSelection().anchorNode;
-        return (node.nodeType === 3 ? node.parentNode : node);
-    };
+	const getSelNode = () => {
+		const node = document.getSelection().anchorNode;
+		return (node.nodeType === 3 ? node.parentNode : node);
+	};
 
-    const keyCmd = (evnt, cmd, arg) => {
-        if (evnt.ctrlKey || evnt.metaKey)
-            return !document.execCommand(cmd, false, arg);
-        return true;
-    }
+	const ymd_string = () => {
+		const dt = new Date(), month = (dt.getMonth() + 1), day = dt.getDate();
+		return [dt.getFullYear(), (month > 9 ? '' : '0') + month, (day > 9 ? '' : '0') + day].join('.')
+	};
 
-    const keys = {
-        "b": (evnt) => keyCmd(evnt, "bold"),
-        "i": (evnt) => keyCmd(evnt, "italic"),
-        "u": (evnt) => keyCmd(evnt, "underline"),
-        "0": (evnt) => keyCmd(evnt, "formatBlock", "<p>"),
-        "1": (evnt) => keyCmd(evnt, "formatBlock", "<h1>"),
-        "2": (evnt) => keyCmd(evnt, "formatBlock", "<h2>"),
-        "3": (evnt) => keyCmd(evnt, "formatBlock", "<h3>"),
-        "4": (evnt) => keyCmd(evnt, "formatBlock", "<h4>"),
-        "5": (evnt) => keyCmd(evnt, "formatBlock", "<h5>"),
-        "6": (evnt) => keyCmd(evnt, "formatBlock", "<h6>"),
-        "7": (evnt) => keyCmd(evnt, "insertOrderedList"),
-        "8": (evnt) => keyCmd(evnt, "insertUnorderedList"),
-        "9": (evnt) => {
-            if (evnt.ctrlKey || evnt.metaKey) {
-                const node = getSelNode();
-                const defurl = (node.nodeName === "A" ? node.href : "http://");
-                const url = prompt("Enter URL:", defurl);
-                return !document.execCommand(
-                    (url === "" ? "unlink" : "createLink"), false, url);
-            }
-            return true;
-        },
+	const exec = document.execCommand;
+	const ctrlHeld = (ev) => (ev.ctrlKey || ev.metaKey)
+	const inTag = (tag) => (getSelNode().nodeName === tag);
+	const keyCmd = (ev, cmd, arg) => (ctrlHeld() ? !exec(cmd, false, arg) : true);
 
-        "Enter": () => {
-            if (getSelNode().nodeName === "CODE")
-                return !document.execCommand("insertHTML",false,"\n");
-            else
-                return !document.execCommand("insertParagraph",false);
-        },
+	const keys = {
+		"b": (ev) => keyCmd(ev, "bold"),
+		"i": (ev) => keyCmd(ev, "italic"),
+		"u": (ev) => keyCmd(ev, "underline"),
+		"0": (ev) => keyCmd(ev, "formatBlock", "<p>"),
+		"1": (ev) => keyCmd(ev, "formatBlock", "<h1>"),
+		"2": (ev) => keyCmd(ev, "formatBlock", "<h2>"),
+		"3": (ev) => keyCmd(ev, "formatBlock", "<h3>"),
+		"4": (ev) => keyCmd(ev, "formatBlock", "<h4>"),
+		"5": (ev) => keyCmd(ev, "formatBlock", "<h5>"),
+		"6": (ev) => keyCmd(ev, "formatBlock", "<h6>"),
+		"7": (ev) => keyCmd(ev, "insertOrderedList"),
+		"8": (ev) => keyCmd(ev, "insertUnorderedList"),
+		"9": (ev) => {
+			if (ctrlHeld()) {
+				const defurl = (inTag("A") ? getSelNode().href : "http://");
+				const url = prompt("Enter URL:", defurl);
+				return !exec((url !== null && url !== "" ? "createLink" : "unlink"), false, url);
+			}
+			return true;
+		},
 
-        "Tab": (evnt) => {
-            if (getSelNode().nodeName === "CODE")
-                return !document.execCommand("insertHTML",false,"\t");
-            else
-                return !document.execCommand((evnt.shiftKey ? "out" : "in")+"dent",false);
-        },
+		"Enter": () => !exec(inTag("CODE") ? "insertHTML" : "insertParagraph", false, "\n"),
 
-        ";": (evnt) => keyCmd(evnt, "insertHTML", "<code>\r\n</code>"),
-        "'": (evnt) => {
-            if (evnt.ctrlKey || evnt.metaKey) {
-                const block = (getSelNode().nodeName === "BLOCKQUOTE" ? "<p>" : "<blockquote>");
-                return !document.execCommand("formatBlock", false, block);
-            }
-            return true;
-        },
-    };
+		"Tab": (ev) => {
+			if (inTag("CODE"))
+				return !exec("insertHTML",false,"\t");
+			else
+				return !exec((ev.shiftKey ? "out" : "in")+"dent",false);
+		},
 
-    const ymd_string = () => {
-        const date = new Date();
-        const month = date.getMonth() + 1;
-        const day = date.getDate();
-        return "" +
-            date.getFullYear() + "." +
-            (month > 9 ? '' : '0') + month + "." +
-            (day > 9 ? '' : '0') + day;
-    };
+		";": (ev) => keyCmd(ev, "insertHTML", "<code>\r\n</code>"),
+		"'": (ev) => {
+			if (ctrlHeld()) {
+				const block = (inTag("BLOCKQUOTE") ? "<p>" : "<blockquote>");
+				return !exec("formatBlock", false, block);
+			}
+			return true;
+		},
+	};
 
-    header.onkeyup = (evnt) => {
-        document.title = header.innerText;
-    }
-
-    content.onkeydown = (evnt) => {
-        const keyfn = keys[evnt.key];
-        return (keyfn ? keyfn(evnt) : true);
-    }
-
-    /* set the title to todays date */
-    header.innerHTML = '<h1 align="center" contenteditable="true">'
-                     + ymd_string() + '</h1><hr/>';
-    document.title = header.innerText;
+	header.onkeyup = (ev) => (document.title = header.innerText)
+	content.onkeydown = (ev) => (keys[ev.key] ? keyfn(keys[ev.key]) : true),
+	header.innerHTML = '<h1 align="center" contenteditable="true">' + ymd_string() + '</h1><hr/>';
+	document.title = header.innerText;
 })();
