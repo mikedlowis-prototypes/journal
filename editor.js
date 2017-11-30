@@ -6,59 +6,58 @@
         return (node.nodeType === 3 ? node.parentNode : node);
     };
 
-    const ctrlKey = (evnt, cmd, arg) => {
-        console.log(evnt.ctrlKey);
-        if (evnt.ctrlKey) {
-            document.execCommand(cmd,false,arg);
-            return false;
-        }
+    const keyCmd = (evnt, cmd, arg) => {
+        if (evnt.ctrlKey || evnt.metaKey)
+            return !document.execCommand(cmd, false, arg);
         return true;
-    };
-
-    const ctrlShiftKey = (evnt, cmd, arg) => {
-        console.log(evnt.ctrlKey);
-        if (evnt.ctrlKey && evnt.shiftKey) {
-            document.execCommand(cmd,false,arg);
-            return false;
-        }
-        return true;
-    };
+    }
 
     const keys = {
-        "b": (evnt) => (ctrlKey(evnt,"bold")),
-        "i": (evnt) => (ctrlKey(evnt,"italic")),
-        "u": (evnt) => (ctrlKey(evnt,"underline")),
-        ";": (evnt) => (ctrlKey(evnt,"insertHTML", "<code>\r\n</code>")),
-        "'": (evnt) => (ctrlKey(evnt,"formatBlock", "<blockquote>")),
-        "0": (evnt) => (ctrlKey(evnt,"formatBlock", "<p>")),
-        "1": (evnt) => (ctrlKey(evnt,"formatBlock", "<h1>")),
-        "2": (evnt) => (ctrlKey(evnt,"formatBlock", "<h2>")),
-        "3": (evnt) => (ctrlKey(evnt,"formatBlock", "<h3>")),
-        "4": (evnt) => (ctrlKey(evnt,"formatBlock", "<h4>")),
-        "5": (evnt) => (ctrlKey(evnt,"formatBlock", "<h5>")),
-        "6": (evnt) => (ctrlKey(evnt,"formatBlock", "<h6>")),
-        "#": (evnt) => (ctrlShiftKey(evnt,"insertOrderedList")),
-        "*": (evnt) => (ctrlShiftKey(evnt,"insertUnorderedList")),
+        "b": (evnt) => keyCmd(evnt, "bold"),
+        "i": (evnt) => keyCmd(evnt, "italic"),
+        "u": (evnt) => keyCmd(evnt, "underline"),
+        "0": (evnt) => keyCmd(evnt, "formatBlock", "<p>"),
+        "1": (evnt) => keyCmd(evnt, "formatBlock", "<h1>"),
+        "2": (evnt) => keyCmd(evnt, "formatBlock", "<h2>"),
+        "3": (evnt) => keyCmd(evnt, "formatBlock", "<h3>"),
+        "4": (evnt) => keyCmd(evnt, "formatBlock", "<h4>"),
+        "5": (evnt) => keyCmd(evnt, "formatBlock", "<h5>"),
+        "6": (evnt) => keyCmd(evnt, "formatBlock", "<h6>"),
+        "7": (evnt) => keyCmd(evnt, "insertOrderedList"),
+        "8": (evnt) => keyCmd(evnt, "insertUnorderedList"),
+        "9": (evnt) => {
+            if (evnt.ctrlKey || evnt.metaKey) {
+                const node = getSelNode();
+                const defurl = (node.nodeName === "A" ? node.href : "http://");
+                const url = prompt("Enter URL:", defurl);
+                return !document.execCommand(
+                    (url === "" ? "unlink" : "createLink"), false, url);
+            }
+            return true;
+        },
 
         "Enter": () => {
             if (getSelNode().nodeName === "CODE")
-                document.execCommand("insertHTML",false,"\n");
+                return !document.execCommand("insertHTML",false,"\n");
             else
-                document.execCommand("insertParagraph",false);
-            return false;
+                return !document.execCommand("insertParagraph",false);
         },
 
         "Tab": (evnt) => {
             if (getSelNode().nodeName === "CODE")
-                document.execCommand("insertHTML",false,"\t");
+                return !document.execCommand("insertHTML",false,"\t");
             else
-                document.execCommand((evnt.shiftKey ? "out" : "in")+"dent",false);
-            return false;
+                return !document.execCommand((evnt.shiftKey ? "out" : "in")+"dent",false);
+        },
+
+        ";": (evnt) => keyCmd(evnt, "insertHTML", "<code>\r\n</code>"),
+        "'": (evnt) => {
+            const block = (getSelNode().nodeName === "BLOCKQUOTE" ? "<p>" : "<blockquote>");
+            return !document.execCommand("formatBlock", false, block);
         },
     };
 
     content.onkeydown = (evnt) => {
-        console.log(evnt);
         const keyfn = keys[evnt.key];
         return (keyfn ? keyfn(evnt) : true);
     }
