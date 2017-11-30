@@ -57,8 +57,27 @@
         },
     };
 
+    const ymd_string = () => {
+        const date = new Date();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        return "" +
+            date.getFullYear() + "." +
+            (month > 9 ? '' : '0') + month + "." +
+            (day > 9 ? '' : '0') + day
+    };
+
+    header.onkeyup = (evnt) => {
+        document.title = header.innerText;
+    }
+
     content.onkeydown = (evnt) => {
         const keyfn = keys[evnt.key];
         return (keyfn ? keyfn(evnt) : true);
     }
+
+    /* set the title to todays date */
+    header.innerHTML = '<h1 align="center" contenteditable="true">'
+                     + ymd_string() + '</h1><hr/>';
+    document.title = header.innerText;
 })();
