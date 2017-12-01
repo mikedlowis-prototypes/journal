@@ -63,7 +63,7 @@
 	content.onkeydown = (ev) => (keys[ev.key] ? (keys[ev.key])(ev) : true);
 	content.focus();
 
-	if (doc.title != "") {
+	if (doc.title === "") {
 		header.innerHTML = '<h1 align="center" contenteditable="true">' + ymd_string() + '</h1><hr/>';
 		doc.title = header.innerText;
 	}
