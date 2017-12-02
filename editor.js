@@ -18,7 +18,9 @@
 		return [dt.getFullYear(), (month > 9 ? '' : '0') + month, (day > 9 ? '' : '0') + day].join('.');
 	};
 
-	const initialize = () => {
+	const initialize = (force) => {
+		if (!!force) document.title = "", ls.clear();
+
 		if (doc.title === "") {
 			content.innerHTML = !!ls['content'] ? ls['content'] : "<p>&nbsp;</p>";
 			header.innerHTML = !!ls['header'] ? ls['header']
@@ -26,8 +28,9 @@
 			doc.title = header.innerText;
 		}
 
+		header.onkeydown = (ev) => (!!keys[ev.key] ? (keys[ev.key])(ev) : true);
 		content.onkeydown = (ev) => (!!keys[ev.key] ? (keys[ev.key])(ev) : true);
-		header.onkeyup = (ev) => {
+		document.onkeyup = (ev) => {
 			doc.title = header.innerText;
 			ls['header'] = header.innerHTML;
 			ls['content'] = content.innerHTML;
@@ -40,6 +43,8 @@
 	const keyCmd = (ev, cmd, arg) => (ctrlHeld(ev) ? !doc.exec(cmd, false, arg) : true);
 
 	const keys = {
+		".": (ev) => initialize(true),
+		";": (ev) => keyCmd(ev, "insertHTML", "<code>\r\n</code>"),
 		"b": (ev) => keyCmd(ev, "bold"),
 		"i": (ev) => keyCmd(ev, "italic"),
 		"u": (ev) => keyCmd(ev, "underline"),
@@ -70,8 +75,6 @@
 				return !doc.exec((ev.shiftKey ? "out" : "in")+"dent",false);
 		},
 
-		"\\": (ev) => init(),
-		";": (ev) => keyCmd(ev, "insertHTML", "<code>\r\n</code>"),
 		"'": (ev) => {
 			if (ctrlHeld(ev)) {
 				const block = (inTag("BLOCKQUOTE") ? "<p>" : "<blockquote>");
