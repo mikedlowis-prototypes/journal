@@ -3,6 +3,10 @@
 (() => {
 	const doc = document;
 	doc.exec = doc.execCommand;
+	const ls = (() => {
+		try { return localStorage; }
+		catch (e) { return {}; }
+	})();
 
 	const getSelNode = () => {
 		const node = doc.getSelection().anchorNode;
@@ -13,6 +17,23 @@
 		const dt = new Date(), month = (dt.getMonth() + 1), day = dt.getDate();
 		return [dt.getFullYear(), (month > 9 ? '' : '0') + month, (day > 9 ? '' : '0') + day].join('.');
 	};
+
+	const initialize = () => {
+		if (doc.title === "") {
+			content.innerHTML = !!ls['content'] ? ls['content'] : "<p>&nbsp;</p>";
+			header.innerHTML = !!ls['header'] ? ls['header']
+			                 : '<h1 align="center" contenteditable="true">' + ymd_string() + '</h1><hr/>' ;
+			doc.title = header.innerText;
+		}
+
+		content.onkeydown = (ev) => (!!keys[ev.key] ? (keys[ev.key])(ev) : true);
+		header.onkeyup = (ev) => {
+			doc.title = header.innerText;
+			ls['header'] = header.innerHTML;
+			ls['content'] = content.innerHTML;
+		};
+		content.focus();
+	}
 
 	const ctrlHeld = (ev) => (ev.ctrlKey || ev.metaKey);
 	const inTag = (tag) => (getSelNode().nodeName === tag);
@@ -49,6 +70,7 @@
 				return !doc.exec((ev.shiftKey ? "out" : "in")+"dent",false);
 		},
 
+		"\\": (ev) => init(),
 		";": (ev) => keyCmd(ev, "insertHTML", "<code>\r\n</code>"),
 		"'": (ev) => {
 			if (ctrlHeld(ev)) {
@@ -59,12 +81,5 @@
 		},
 	};
 
-	header.onkeyup = (ev) => (doc.title = header.innerText);
-	content.onkeydown = (ev) => (keys[ev.key] ? (keys[ev.key])(ev) : true);
-	content.focus();
-
-	if (doc.title === "") {
-		header.innerHTML = '<h1 align="center" contenteditable="true">' + ymd_string() + '</h1><hr/>';
-		doc.title = header.innerText;
-	}
+	initialize();
 })();
