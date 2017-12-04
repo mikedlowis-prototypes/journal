@@ -41,9 +41,17 @@
 	const ctrlHeld = (ev) => (ev.ctrlKey || ev.metaKey);
 	const inTag = (tag) => (getSelNode().nodeName === tag);
 	const keyCmd = (ev, cmd, arg) => (ctrlHeld(ev) ? !doc.exec(cmd, false, arg) : true);
+	const reinit = (ev) => {
+		if (ctrlHeld(ev)) {
+			initialize(true);
+			return false;
+		} else {
+			return true;
+		}
+	}
 
 	const keys = {
-		".": (ev) => initialize(true),
+		".": (ev) => reinit(ev),
 		";": (ev) => keyCmd(ev, "insertHTML", "<code>\r\n</code>"),
 		"b": (ev) => keyCmd(ev, "bold"),
 		"i": (ev) => keyCmd(ev, "italic"),
